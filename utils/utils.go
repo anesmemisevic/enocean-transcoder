@@ -7,6 +7,14 @@ import (
 	"strconv"
 )
 
+func GetScaledValue(maxScale, minScale, maxRange, minRange float64, rawValue int) (scaledValue float64) {
+	scaleRange := maxScale - minScale
+	rangeRange := maxRange - minRange
+	rawRange := (float64(rawValue) - (minRange))
+	scaledValue = scaleRange/rangeRange*rawRange + minScale
+	return scaledValue
+}
+
 func GetRaw(source map[string]int, bitarray []bool) int {
 	offset := source["offset"]
 	size := source["size"]
@@ -31,7 +39,7 @@ func GetRaw(source map[string]int, bitarray []bool) int {
 	return int(rawData)
 }
 
-func CombineHex(data []int) int {
+func combineHex(data []int) int {
 	output := 0x00
 	for i, value := range reverseIntSlice(data) {
 		output |= (value << (i * 8))
@@ -39,28 +47,32 @@ func CombineHex(data []int) int {
 	return output
 }
 
-func ToBitArray(data interface{}, width int) []bool {
-	var combinedData int
+func toBitArray(data []int) (bitArray []bool) {
+	var totalDataBitArray []bool
+	for _, i := range data {
+		currentNumber := i
+		bitsFromInt := make([]bool, 8)
+		for j := 7; j >= 0; j-- {
+			bitsFromInt[j] = currentNumber&1 == 1
+			currentNumber >>= 1
+		}
+		totalDataBitArray = append(totalDataBitArray, bitsFromInt...)
+	}
+	return totalDataBitArray
+}
+
+func ToBitArray(data interface{}) (bitArray []bool) {
 	switch v := data.(type) {
 	case []int:
-		combinedData = CombineHex(v)
+		return toBitArray(data.([]int))
 	case []byte:
-		combinedData = CombineHex(byteArrayToIntSlice(v))
+		return toBitArray((byteArrayToIntSlice(v)))
 	case int:
-		combinedData = v
+		return toBitArray([]int{v})
 	default:
 		fmt.Println("Unsupported data type")
 		return nil
 	}
-
-	binaryString := fmt.Sprintf("%b", combinedData)
-	paddedBinaryString := fmt.Sprintf("%0*s", width, binaryString)
-
-	var bitArray []bool
-	for _, digit := range paddedBinaryString {
-		bitArray = append(bitArray, digit == '1')
-	}
-	return bitArray
 }
 
 func reverseIntSlice(slice []int) []int {
