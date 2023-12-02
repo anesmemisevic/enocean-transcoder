@@ -2,6 +2,7 @@ package processor
 
 import (
 	"encoding/xml"
+	"fmt"
 
 	"github.com/anesmemisevic/enocean-transcoder/models"
 	"github.com/anesmemisevic/enocean-transcoder/utils"
@@ -10,7 +11,10 @@ import (
 func LoadEEPs(rorg string, eepFunc string, eepType string) models.Telegrams {
 	loadedProfiles := utils.LoadXML("EEP.xml")
 	var telegrams models.Telegrams
-	xml.Unmarshal(loadedProfiles, &telegrams)
+	ok := xml.Unmarshal(loadedProfiles, &telegrams)
+	if ok != nil {
+		fmt.Println("Error loading EEP.xml")
+	}
 	return telegrams
 }
 
@@ -38,6 +42,7 @@ func LoadSensorValuesMetadata(profile models.Profile) (SensorValuesMetadataMap m
 		if len(data.Value) != 0 {
 			for _, value := range data.Value {
 				valuesMetadataMap[value.Shortcut] = make(map[string]interface{})
+				valuesMetadataMap[value.Shortcut].(map[string]interface{})["datatype"] = "value"
 				valuesMetadataMap[value.Shortcut].(map[string]interface{})["description"] = value.Description
 				valuesMetadataMap[value.Shortcut].(map[string]interface{})["shortcut"] = value.Shortcut
 				valuesMetadataMap[value.Shortcut].(map[string]interface{})["offset"] = value.Offset
@@ -55,6 +60,7 @@ func LoadSensorValuesMetadata(profile models.Profile) (SensorValuesMetadataMap m
 		if len(data.Status) != 0 {
 			for _, status := range data.Status {
 				valuesMetadataMap[status.Shortcut] = make(map[string]interface{})
+				valuesMetadataMap[status.Shortcut].(map[string]interface{})["datatype"] = "status"
 				valuesMetadataMap[status.Shortcut].(map[string]interface{})["description"] = status.Description
 				valuesMetadataMap[status.Shortcut].(map[string]interface{})["shortcut"] = status.Shortcut
 				valuesMetadataMap[status.Shortcut].(map[string]interface{})["offset"] = status.Offset
@@ -65,6 +71,7 @@ func LoadSensorValuesMetadata(profile models.Profile) (SensorValuesMetadataMap m
 		if len(data.Enum) != 0 {
 			for _, enum := range data.Enum {
 				valuesMetadataMap[enum.Shortcut] = make(map[string]interface{})
+				valuesMetadataMap[enum.Shortcut].(map[string]interface{})["datatype"] = "enum"
 				valuesMetadataMap[enum.Shortcut].(map[string]interface{})["description"] = enum.Description
 				valuesMetadataMap[enum.Shortcut].(map[string]interface{})["shortcut"] = enum.Shortcut
 				valuesMetadataMap[enum.Shortcut].(map[string]interface{})["offset"] = enum.Offset
@@ -88,4 +95,40 @@ func LoadSensorValuesMetadata(profile models.Profile) (SensorValuesMetadataMap m
 		}
 	}
 	return valuesMetadataMap
+}
+
+func GetSensorValues(dataMap map[string]interface{}, bitArray []bool) (sensorValues map[string]interface{}, ok bool) {
+	sensorValues = make(map[string]interface{})
+	// TODO: make new struct for sensor values including rawValue, description, shortcut, unit, realValue, etc.
+
+	for key, value := range dataMap {
+		if value.(map[string]interface{})["datatype"] == "value" {
+			offset := value.(map[string]interface{})["offset"].(int)
+			size := value.(map[string]interface{})["size"].(int)
+			minScale := value.(map[string]interface{})["scale"].(map[string]interface{})["min"].(float64)
+			maxScale := value.(map[string]interface{})["scale"].(map[string]interface{})["max"].(float64)
+			minRange := value.(map[string]interface{})["range"].(map[string]interface{})["min"].(float64)
+			maxRange := value.(map[string]interface{})["range"].(map[string]interface{})["max"].(float64)
+
+			offsetSizeMap := map[string]int{"offset": offset, "size": size}
+			sensorValues[key] = make(map[string]interface{})
+			rawValue := utils.GetRaw(offsetSizeMap, bitArray)
+			sensorValues[key].(map[string]interface{})["rawValue"] = rawValue
+			sensorValues[key].(map[string]interface{})["unit"] = value.(map[string]interface{})["unit"]
+			sensorValues[key].(map[string]interface{})["scaledValue"] = utils.GetScaledValue(minScale, maxScale, minRange, maxRange, rawValue)
+		}
+		if value.(map[string]interface{})["datatype"] == "status" {
+			// TODO: implement status from rawValue
+			continue
+		}
+		if value.(map[string]interface{})["datatype"] == "enum" {
+			// TODO: implement enum from rawValue
+			continue
+		}
+	}
+	if len(sensorValues) != 0 {
+		return sensorValues, true
+	}
+
+	return nil, false
 }
