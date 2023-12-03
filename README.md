@@ -22,7 +22,7 @@ This project provides a Go implementation of a transcoder for the Data part of t
 
 2. **Clone the Repository:**
    ```bash
-   git clone https://github.com/your-username/enocean-esp3-transcoder-go.git
+   git clone https://github.com/anesmemisevic/enocean-transcoder.git
 
 3. **Import in your project:**
   TBA

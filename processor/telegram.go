@@ -18,21 +18,21 @@ func LoadEEPs() models.Telegrams {
 	return telegrams
 }
 
-func FindProfile(telegrams models.Telegrams, targetRorg string, targetFunc string, targetType string) (found bool, result models.Profile) {
+func FindProfile(telegrams models.Telegrams, targetRorg string, targetFunc string, targetType string) (result models.Profile, found bool) {
 	for _, telegram := range telegrams.Telegrams {
 		if telegram.Rorg == targetRorg {
 			for _, profile := range telegram.Profiles {
 				if profile.Func == targetFunc {
 					for _, profileData := range profile.Profiles {
 						if profileData.Type == targetType {
-							return true, profileData
+							return profileData, true
 						}
 					}
 				}
 			}
 		}
 	}
-	return false, models.Profile{}
+	return models.Profile{}, false
 }
 
 func LoadSensorValuesMetadata(profile models.Profile) (SensorValuesMetadataMap map[string]interface{}) {
