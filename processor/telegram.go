@@ -99,7 +99,6 @@ func LoadSensorValuesMetadata(profile models.Profile) (SensorValuesMetadataMap m
 
 func GetSensorValues(dataMap map[string]interface{}, bitArray []bool) (sensorValues map[string]interface{}, ok bool) {
 	sensorValues = make(map[string]interface{})
-
 	for key, value := range dataMap {
 		if value.(map[string]interface{})["datatype"] == "value" {
 			// TODO: make new struct for sensor values including rawValue, description, shortcut, unit, realValue, etc.
@@ -109,30 +108,60 @@ func GetSensorValues(dataMap map[string]interface{}, bitArray []bool) (sensorVal
 			maxScale := value.(map[string]interface{})["scale"].(map[string]interface{})["max"].(float64)
 			minRange := value.(map[string]interface{})["range"].(map[string]interface{})["min"].(float64)
 			maxRange := value.(map[string]interface{})["range"].(map[string]interface{})["max"].(float64)
-
 			offsetSizeMap := map[string]int{"offset": offset, "size": size}
-			sensorValues[key] = make(map[string]interface{})
+
 			rawValue := utils.GetRaw(offsetSizeMap, bitArray)
+			sensorValues[key] = make(map[string]interface{})
 			sensorValues[key].(map[string]interface{})["rawValue"] = rawValue
+			sensorValues[key].(map[string]interface{})["description"] = value.(map[string]interface{})["description"]
 			sensorValues[key].(map[string]interface{})["unit"] = value.(map[string]interface{})["unit"]
 			sensorValues[key].(map[string]interface{})["scaledValue"] = utils.GetScaledValue(minScale, maxScale, minRange, maxRange, rawValue)
 		}
+
 		if value.(map[string]interface{})["datatype"] == "status" {
 			offset := value.(map[string]interface{})["offset"].(int)
 			size := value.(map[string]interface{})["size"].(int)
 			offsetSizeMap := map[string]int{"offset": offset, "size": size}
+
+			rawValue := utils.GetRaw(offsetSizeMap, bitArray)
 			sensorValues[key] = make(map[string]interface{})
-			if utils.GetRaw(offsetSizeMap, bitArray) == 1 {
+			sensorValues[key].(map[string]interface{})["description"] = value.(map[string]interface{})["description"]
+			if rawValue == 1 {
 				sensorValues[key].(map[string]interface{})["scaledValue"] = true
 			} else {
 				sensorValues[key].(map[string]interface{})["scaledValue"] = false
 			}
 		}
+
 		if value.(map[string]interface{})["datatype"] == "enum" {
-			// TODO: implement enum from rawValue
-			continue
+			offset := value.(map[string]interface{})["offset"].(int)
+			size := value.(map[string]interface{})["size"].(int)
+			offsetSizeMap := map[string]int{"offset": offset, "size": size}
+
+			rawValue := utils.GetRaw(offsetSizeMap, bitArray)
+			sensorValues[key] = make(map[string]interface{})
+			sensorValues[key].(map[string]interface{})["unit"] = value.(map[string]interface{})["unit"]
+			sensorValues[key].(map[string]interface{})["description"] = value.(map[string]interface{})["description"]
+			sensorValues[key].(map[string]interface{})["rawValue"] = rawValue
+
+			if len(value.(map[string]interface{})["item"].(map[string]interface{})) != 0 {
+				for ItemKey, ItemValue := range value.(map[string]interface{})["item"].(map[string]interface{}) {
+					if ItemValue == rawValue {
+						sensorValues[key].(map[string]interface{})["scaledValue"] = ItemKey
+					}
+				}
+			}
+
+			if len(value.(map[string]interface{})["rangeitem"].(map[string]interface{})) != 0 {
+				for RangeItemKey, RangeItemValue := range value.(map[string]interface{})["rangeitem"].(map[string]interface{}) {
+					if rawValue >= RangeItemValue.(map[string]interface{})[RangeItemKey+"-start"].(int) && rawValue <= RangeItemValue.(map[string]interface{})[RangeItemKey+"-end"].(int) {
+						sensorValues[key].(map[string]interface{})["scaledValue"] = RangeItemKey
+					}
+				}
+			}
 		}
 	}
+
 	if len(sensorValues) != 0 {
 		return sensorValues, true
 	}
