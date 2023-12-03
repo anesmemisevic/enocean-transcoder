@@ -8,7 +8,7 @@ import (
 	"github.com/anesmemisevic/enocean-transcoder/utils"
 )
 
-func LoadEEPs(rorg string, eepFunc string, eepType string) models.Telegrams {
+func LoadEEPs() models.Telegrams {
 	loadedProfiles := utils.LoadXML("EEP.xml")
 	var telegrams models.Telegrams
 	ok := xml.Unmarshal(loadedProfiles, &telegrams)
