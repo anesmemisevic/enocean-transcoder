@@ -57,11 +57,7 @@ func TestIntsToBitArrayD21441(t *testing.T) {
 }
 
 func TestLoadEEPs(t *testing.T) {
-	findRorg := "0xD2"
-	findFunc := "0x14"
-	findType := "0x41"
-
-	eeps := LoadEEPs(findRorg, findFunc, findType)
+	eeps := LoadEEPs()
 
 	if len(eeps.Telegrams) == 0 {
 		t.Errorf("EEPs not loaded")
@@ -87,8 +83,8 @@ func TestFindProfileD21441(t *testing.T) {
 	findFunc := "0x14"
 	findType := "0x41"
 
-	eeps := LoadEEPs(findRorg, findFunc, findType)
-	ok, profile := FindProfile(eeps, findRorg, findFunc, findType)
+	eeps := LoadEEPs()
+	profile, ok := FindProfile(eeps, findRorg, findFunc, findType)
 
 	if !ok {
 		t.Errorf("Profile not found")
@@ -109,8 +105,8 @@ func TestLoadSensorValuesMetadataHumTempValue(t *testing.T) {
 	findFunc := "0x14"
 	findType := "0x41"
 
-	eeps := LoadEEPs(findRorg, findFunc, findType)
-	ok, profile := FindProfile(eeps, findRorg, findFunc, findType)
+	eeps := LoadEEPs()
+	profile, ok := FindProfile(eeps, findRorg, findFunc, findType)
 
 	if !ok {
 		t.Errorf("Profile not found")
@@ -205,8 +201,8 @@ func TestLoadSensorValuesMetadataForContactEnum(t *testing.T) {
 	findFunc := "0x14"
 	findType := "0x41"
 
-	eeps := LoadEEPs(findRorg, findFunc, findType)
-	ok, profile := FindProfile(eeps, findRorg, findFunc, findType)
+	eeps := LoadEEPs()
+	profile, ok := FindProfile(eeps, findRorg, findFunc, findType)
 
 	if !ok {
 		t.Errorf("Profile not found")
@@ -238,11 +234,11 @@ func TestLoadSensorValuesMetadataForContactEnum(t *testing.T) {
 		t.Errorf("Contact size not correct")
 	}
 
-	if (dataMap["CO"].(map[string]interface{})["item"].(map[string]interface{})["Closed"]) != "1" {
+	if (dataMap["CO"].(map[string]interface{})["item"].(map[string]interface{})["Closed"]) != 1 {
 		t.Errorf("Contact item not correct")
 	}
 
-	if (dataMap["CO"].(map[string]interface{})["item"].(map[string]interface{})["Open"]) != "0" {
+	if (dataMap["CO"].(map[string]interface{})["item"].(map[string]interface{})["Open"]) != 0 {
 		t.Errorf("Contact item not correct")
 	}
 }
@@ -252,8 +248,8 @@ func TestLoadSensorValuesMetadataForIlluminationValue(t *testing.T) {
 	findFunc := "0x14"
 	findType := "0x41"
 
-	eeps := LoadEEPs(findRorg, findFunc, findType)
-	ok, profile := FindProfile(eeps, findRorg, findFunc, findType)
+	eeps := LoadEEPs()
+	profile, ok := FindProfile(eeps, findRorg, findFunc, findType)
 
 	if !ok {
 		t.Errorf("Profile not found")
