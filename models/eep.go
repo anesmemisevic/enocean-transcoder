@@ -67,13 +67,13 @@ type Value struct {
 type Item struct {
 	XMLName     xml.Name `xml:"item"`
 	Description string   `xml:"description,attr,omitempty"`
-	Value       string   `xml:"value,attr,omitempty"`
+	Value       int      `xml:"value,attr,omitempty"`
 }
 type RangeItem struct {
 	XMLName     xml.Name `xml:"rangeitem"`
 	Description string   `xml:"description,attr,omitempty"`
 	Start       int      `xml:"start,attr"`
-	End         *int     `xml:"end,attr"`
+	End         int      `xml:"end,attr"`
 }
 type Status struct {
 	XMLName     xml.Name `xml:"status"`
