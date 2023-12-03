@@ -36,11 +36,13 @@ type Profile struct {
 }
 
 type Data struct {
-	XMLName xml.Name `xml:"data"`
-	Enum    []Enum   `xml:"enum,omitempty"`
-	Value   []Value  `xml:"value,omitempty"`
-	Status  []Status `xml:"status,omitempty"`
-	Command int      `xml:"command,omitempty"`
+	XMLName   xml.Name `xml:"data"`
+	Enum      []Enum   `xml:"enum,omitempty"`
+	Value     []Value  `xml:"value,omitempty"`
+	Status    []Status `xml:"status,omitempty"`
+	Command   int      `xml:"command,omitempty"`
+	Bits      int      `xml:"bits,attr,omitempty"`
+	Direction string   `xml:"direction,attr,omitempty"`
 }
 
 type Enum struct {
@@ -104,9 +106,7 @@ type Scale struct {
 }
 
 type EEP struct {
-	Rorg      string
-	Type      string
-	Func      string
-	Direction string
-	Command   string
+	Rorg string
+	Func string
+	Type string
 }
