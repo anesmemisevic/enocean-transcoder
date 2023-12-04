@@ -106,7 +106,7 @@ type Scale struct {
 }
 
 type EEP struct {
-	Rorg string
-	Func string
-	Type string
+	Rorg string `json:"rorg"`
+	Func string `json:"func"`
+	Type string `json:"type"`
 }
