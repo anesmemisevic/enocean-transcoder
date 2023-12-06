@@ -66,29 +66,61 @@ func main() {
 }
 ```
 
-```
-0xD2 0x14 0x41
-Key:  ILL
-Value:  map[description:Illumination linear) rawValue:10696 scaledValue:10696 unit:lx]
+```json
+{
+  "assigned_eep": { "rorg": "0xD2", "func": "0x14", "type": "0x41" },
+  "telegram_type": "VLD",
+  "sensor_description": "Indoor -Temperature, Humidity XYZ Acceleration, Illumination Sensor",
+  "data": {
+    "ACC": {
+      "shortcut": "ACC",
+      "value": "Periodic Update",
+      "unit": null,
+      "description": "Acceleration Status"
+    },
+    "ACX": {
+      "shortcut": "ACX",
+      "value": 1,
+      "unit": "g",
+      "description": "Absolute Acceleration on X axis"
+    },
+    "ACY": {
+      "shortcut": "ACY",
+      "value": 2,
+      "unit": "g",
+      "description": "Absolute Acceleration on Y axis"
+    },
+    "ACZ": {
+      "shortcut": "ACZ",
+      "value": 2.5,
+      "unit": "g",
+      "description": "Absolute Acceleration on Z axis"
+    },
+    "CO": {
+      "shortcut": "CO",
+      "value": "Closed",
+      "unit": null,
+      "description": "Contact"
+    },
+    "HUM": {
+      "shortcut": "HUM",
+      "value": 29.5,
+      "unit": "%",
+      "description": "Rel. Humidity linear)"
+    },
+    "ILL": {
+      "shortcut": "ILL",
+      "value": 10696,
+      "unit": "lx",
+      "description": "Illumination linear)"
+    },
+    "TMP": {
+      "shortcut": "TMP",
+      "value": -31.900000000000006,
+      "unit": "°C",
+      "description": "Temperature 10"
+    }
+  }
+}
 
-Key:  ACX
-Value:  map[description:Absolute Acceleration on X axis rawValue:700 scaledValue:1 unit:g]
-
-Key:  ACY
-Value:  map[description:Absolute Acceleration on Y axis rawValue:900 scaledValue:2 unit:g]
-
-Key:  ACZ
-Value:  map[description:Absolute Acceleration on Z axis rawValue:1000 scaledValue:2.5 unit:g]
-
-Key:  ACC
-Value:  map[description:Acceleration Status rawValue:0 scaledValue:Periodic Update unit:<nil>]
-
-Key:  CO
-Value:  map[description:Contact rawValue:1 scaledValue:Closed unit:<nil>]
-
-Key:  TMP
-Value:  map[description:Temperature 10 rawValue:557 scaledValue:15.69 unit:°C]
-
-Key:  HUM
-Value:  map[description:Rel. Humidity linear) rawValue:59 scaledValue:29.5 unit:%]
 ```
