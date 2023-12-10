@@ -40,29 +40,38 @@ package main
 import (
 	"fmt"
 
-	"github.com/anesmemisevic/enocean-transcoder/processor"
-	"github.com/anesmemisevic/enocean-transcoder/utils"
+	"github.com/anesmemisevic/enocean-transcoder/models"
+  "github.com/anesmemisevic/enocean-transcoder/transcoder"
+
 )
 
 func main() {
-
-	byteArrayMultisensor := []byte{139, 78, 197, 57, 5, 121, 194, 125, 17}
-	bitArray := utils.ToBitArray(byteArrayMultisensor)
+	byteArrayMultisensor := []int{139, 78, 197, 57, 5, 121, 194, 125, 17}
 	findRorg := "0xD2"
 	findFunc := "0x14"
 	findType := "0x41"
 
-	eeps := processor.LoadEEPs()
-	profile, ok := processor.FindProfile(eeps, findRorg, findFunc, findType)
+	decoder := SensorDecoder{
+		ByteStream: byteArrayMultisensor,
+		EEP: models.EEP{
+			Rorg: findRorg,
+			Func: findFunc,
+			Type: findType,
+		},
+	}
+
+	decoder.LoadEEPs()
+	decoder.Decode(byteArrayMultisensor, decoder.EEP)
+	decoded_msg, ok := decoder.Decode(byteArrayMultisensor, decoder.EEP)
 	if !ok {
 		fmt.Println("Error processing telegram")
 	}
-	dataMap := processor.LoadSensorValuesMetadata(profile)
-	valuesMap, ok := processor.GetSensorValues(dataMap, bitArray)
-	if !ok {
-		fmt.Println("Error processing telegram")
+	jsoned, err := MarshalJSON(decoded_msg)
+	if err != nil {
+		fmt.Println(err)
 	}
-	fmt.Println(valuesMap)
+	fmt.Println(string(jsoned))
+
 }
 ```
 
