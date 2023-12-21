@@ -17,6 +17,9 @@ type SensorDecoder struct {
 }
 
 func (f *SensorDecoder) LoadEEPs() (loaded bool) {
+	if len(f.EEPMetadata.Telegrams) > 0 {
+		return true
+	}
 	loadedProfiles := utils.LoadXML("EEP.xml")
 	var telegrams models.Telegrams
 	ok := xml.Unmarshal(loadedProfiles, &telegrams)
@@ -30,7 +33,6 @@ func (f *SensorDecoder) LoadEEPs() (loaded bool) {
 func (f SensorDecoder) Decode(byteStream []int, eep models.EEP) (sensor models.Sensor, ok bool) {
 	f.ByteStream = byteStream
 	bitArray := utils.ToBitArray(f.ByteStream)
-	fmt.Println("ByteStream: ", f.ByteStream)
 	profile, ok := processor.FindProfile(f.EEPMetadata, eep.Rorg, eep.Func, eep.Type)
 	if !ok {
 		fmt.Println("Error processing telegram")
@@ -53,8 +55,8 @@ func (f SensorDecoder) Decode(byteStream []int, eep models.EEP) (sensor models.S
 	sensor = models.Sensor{
 		AssignedEEP:       eep,
 		Data:              sensorData,
-		TelegramType:      "VLD",
-		SensorDescription: "Indoor -Temperature, Humidity XYZ Acceleration, Illumination Sensor",
+		TelegramType:      f.EEPMetadata.Telegrams[0].Type,
+		SensorDescription: profile.Description,
 	}
 
 	return sensor, true
