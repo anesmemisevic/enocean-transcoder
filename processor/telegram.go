@@ -35,71 +35,70 @@ func FindProfile(telegrams models.Telegrams, targetRorg string, targetFunc strin
 	return models.Profile{}, false
 }
 
-func LoadSensorValuesMetadata(profile models.Profile) (SensorValuesMetadataMap map[string]interface{}) {
-	valuesMetadataMap := make(map[string]interface{})
-
+func LoadSensorValuesMetadata(profile models.Profile) (SensorValuesMetadata map[string]interface{}) {
+	valuesMetadata := make(map[string]interface{})
 	for _, data := range profile.Data {
 		if len(data.Value) != 0 {
 			for _, value := range data.Value {
-				valuesMetadataMap[value.Shortcut] = make(map[string]interface{})
-				valuesMetadataMap[value.Shortcut].(map[string]interface{})["datatype"] = "value"
-				valuesMetadataMap[value.Shortcut].(map[string]interface{})["description"] = value.Description
-				valuesMetadataMap[value.Shortcut].(map[string]interface{})["shortcut"] = value.Shortcut
-				valuesMetadataMap[value.Shortcut].(map[string]interface{})["offset"] = value.Offset
-				valuesMetadataMap[value.Shortcut].(map[string]interface{})["size"] = value.Size
-				valuesMetadataMap[value.Shortcut].(map[string]interface{})["unit"] = value.Unit
-				valuesMetadataMap[value.Shortcut].(map[string]interface{})["range"] = make(map[string]interface{})
-				valuesMetadataMap[value.Shortcut].(map[string]interface{})["scale"] = make(map[string]interface{})
-				valuesMetadataMap[value.Shortcut].(map[string]interface{})["range"].(map[string]interface{})["max"] = value.Range.Max
-				valuesMetadataMap[value.Shortcut].(map[string]interface{})["range"].(map[string]interface{})["min"] = value.Range.Min
-				valuesMetadataMap[value.Shortcut].(map[string]interface{})["scale"].(map[string]interface{})["max"] = value.Scale.Max
-				valuesMetadataMap[value.Shortcut].(map[string]interface{})["scale"].(map[string]interface{})["min"] = value.Scale.Min
+				valuesMetadata[value.Shortcut] = make(map[string]interface{})
+				valuesMetadata[value.Shortcut].(map[string]interface{})["datatype"] = "value"
+				valuesMetadata[value.Shortcut].(map[string]interface{})["description"] = value.Description
+				valuesMetadata[value.Shortcut].(map[string]interface{})["shortcut"] = value.Shortcut
+				valuesMetadata[value.Shortcut].(map[string]interface{})["offset"] = value.Offset
+				valuesMetadata[value.Shortcut].(map[string]interface{})["size"] = value.Size
+				valuesMetadata[value.Shortcut].(map[string]interface{})["unit"] = value.Unit
+				valuesMetadata[value.Shortcut].(map[string]interface{})["range"] = make(map[string]interface{})
+				valuesMetadata[value.Shortcut].(map[string]interface{})["scale"] = make(map[string]interface{})
+				valuesMetadata[value.Shortcut].(map[string]interface{})["range"].(map[string]interface{})["max"] = value.Range.Max
+				valuesMetadata[value.Shortcut].(map[string]interface{})["range"].(map[string]interface{})["min"] = value.Range.Min
+				valuesMetadata[value.Shortcut].(map[string]interface{})["scale"].(map[string]interface{})["max"] = value.Scale.Max
+				valuesMetadata[value.Shortcut].(map[string]interface{})["scale"].(map[string]interface{})["min"] = value.Scale.Min
 			}
 		}
 
 		if len(data.Status) != 0 {
 			for _, status := range data.Status {
-				valuesMetadataMap[status.Shortcut] = make(map[string]interface{})
-				valuesMetadataMap[status.Shortcut].(map[string]interface{})["datatype"] = "status"
-				valuesMetadataMap[status.Shortcut].(map[string]interface{})["description"] = status.Description
-				valuesMetadataMap[status.Shortcut].(map[string]interface{})["shortcut"] = status.Shortcut
-				valuesMetadataMap[status.Shortcut].(map[string]interface{})["offset"] = status.Offset
-				valuesMetadataMap[status.Shortcut].(map[string]interface{})["size"] = status.Size
+				valuesMetadata[status.Shortcut] = make(map[string]interface{})
+				valuesMetadata[status.Shortcut].(map[string]interface{})["datatype"] = "status"
+				valuesMetadata[status.Shortcut].(map[string]interface{})["description"] = status.Description
+				valuesMetadata[status.Shortcut].(map[string]interface{})["shortcut"] = status.Shortcut
+				valuesMetadata[status.Shortcut].(map[string]interface{})["offset"] = status.Offset
+				valuesMetadata[status.Shortcut].(map[string]interface{})["size"] = status.Size
 			}
 		}
 
 		if len(data.Enum) != 0 {
 			for _, enum := range data.Enum {
-				valuesMetadataMap[enum.Shortcut] = make(map[string]interface{})
-				valuesMetadataMap[enum.Shortcut].(map[string]interface{})["datatype"] = "enum"
-				valuesMetadataMap[enum.Shortcut].(map[string]interface{})["description"] = enum.Description
-				valuesMetadataMap[enum.Shortcut].(map[string]interface{})["shortcut"] = enum.Shortcut
-				valuesMetadataMap[enum.Shortcut].(map[string]interface{})["offset"] = enum.Offset
-				valuesMetadataMap[enum.Shortcut].(map[string]interface{})["size"] = enum.Size
-				valuesMetadataMap[enum.Shortcut].(map[string]interface{})["item"] = make(map[string]interface{})
-				valuesMetadataMap[enum.Shortcut].(map[string]interface{})["rangeitem"] = make(map[string]interface{})
+				valuesMetadata[enum.Shortcut] = make(map[string]interface{})
+				valuesMetadata[enum.Shortcut].(map[string]interface{})["datatype"] = "enum"
+				valuesMetadata[enum.Shortcut].(map[string]interface{})["description"] = enum.Description
+				valuesMetadata[enum.Shortcut].(map[string]interface{})["shortcut"] = enum.Shortcut
+				valuesMetadata[enum.Shortcut].(map[string]interface{})["offset"] = enum.Offset
+				valuesMetadata[enum.Shortcut].(map[string]interface{})["size"] = enum.Size
+				valuesMetadata[enum.Shortcut].(map[string]interface{})["item"] = make(map[string]interface{})
+				valuesMetadata[enum.Shortcut].(map[string]interface{})["rangeitem"] = make(map[string]interface{})
 
 				if len(enum.Item) != 0 {
 					for _, item := range enum.Item {
-						valuesMetadataMap[enum.Shortcut].(map[string]interface{})["item"].(map[string]interface{})[item.Description] = item.Value
+						valuesMetadata[enum.Shortcut].(map[string]interface{})["item"].(map[string]interface{})[item.Description] = item.Value
 					}
 				}
 
 				if len(enum.RangeItem) != 0 {
 					for _, rangeItem := range enum.RangeItem {
-						valuesMetadataMap[enum.Shortcut].(map[string]interface{})["rangeitem"].(map[string]interface{})[rangeItem.Description+"-start"] = rangeItem.Start
-						valuesMetadataMap[enum.Shortcut].(map[string]interface{})["rangeitem"].(map[string]interface{})[rangeItem.Description+"-end"] = rangeItem.End
+						valuesMetadata[enum.Shortcut].(map[string]interface{})["rangeitem"].(map[string]interface{})[rangeItem.Description+"-start"] = rangeItem.Start
+						valuesMetadata[enum.Shortcut].(map[string]interface{})["rangeitem"].(map[string]interface{})[rangeItem.Description+"-end"] = rangeItem.End
 					}
 				}
 			}
 		}
 	}
-	return valuesMetadataMap
+	return valuesMetadata
 }
 
-func GetSensorValues(dataMap map[string]interface{}, bitArray []bool) (sensorValues map[string]interface{}, ok bool) {
+func GetSensorValues(data map[string]interface{}, bitArray []bool) (sensorValues map[string]interface{}, ok bool) {
 	sensorValues = make(map[string]interface{})
-	for key, value := range dataMap {
+	for key, value := range data {
 		if value.(map[string]interface{})["datatype"] == "value" {
 			// TODO: make new struct for sensor values including rawValue, description, shortcut, unit, realValue, etc.
 			offset := value.(map[string]interface{})["offset"].(int)
@@ -108,9 +107,9 @@ func GetSensorValues(dataMap map[string]interface{}, bitArray []bool) (sensorVal
 			maxScale := value.(map[string]interface{})["scale"].(map[string]interface{})["max"].(float64)
 			minRange := value.(map[string]interface{})["range"].(map[string]interface{})["min"].(float64)
 			maxRange := value.(map[string]interface{})["range"].(map[string]interface{})["max"].(float64)
-			offsetSizeMap := map[string]int{"offset": offset, "size": size}
+			offsetSize := map[string]int{"offset": offset, "size": size}
 
-			rawValue := utils.GetRaw(offsetSizeMap, bitArray)
+			rawValue := utils.GetRaw(offsetSize, bitArray)
 			sensorValues[key] = make(map[string]interface{})
 			sensorValues[key].(map[string]interface{})["rawValue"] = rawValue
 			sensorValues[key].(map[string]interface{})["description"] = value.(map[string]interface{})["description"]
@@ -121,9 +120,9 @@ func GetSensorValues(dataMap map[string]interface{}, bitArray []bool) (sensorVal
 		if value.(map[string]interface{})["datatype"] == "status" {
 			offset := value.(map[string]interface{})["offset"].(int)
 			size := value.(map[string]interface{})["size"].(int)
-			offsetSizeMap := map[string]int{"offset": offset, "size": size}
+			offsetSize := map[string]int{"offset": offset, "size": size}
 
-			rawValue := utils.GetRaw(offsetSizeMap, bitArray)
+			rawValue := utils.GetRaw(offsetSize, bitArray)
 			sensorValues[key] = make(map[string]interface{})
 			sensorValues[key].(map[string]interface{})["description"] = value.(map[string]interface{})["description"]
 			if rawValue == 1 {
@@ -136,26 +135,26 @@ func GetSensorValues(dataMap map[string]interface{}, bitArray []bool) (sensorVal
 		if value.(map[string]interface{})["datatype"] == "enum" {
 			offset := value.(map[string]interface{})["offset"].(int)
 			size := value.(map[string]interface{})["size"].(int)
-			offsetSizeMap := map[string]int{"offset": offset, "size": size}
+			offsetSize := map[string]int{"offset": offset, "size": size}
 
-			rawValue := utils.GetRaw(offsetSizeMap, bitArray)
+			rawValue := utils.GetRaw(offsetSize, bitArray)
 			sensorValues[key] = make(map[string]interface{})
 			sensorValues[key].(map[string]interface{})["unit"] = value.(map[string]interface{})["unit"]
 			sensorValues[key].(map[string]interface{})["description"] = value.(map[string]interface{})["description"]
 			sensorValues[key].(map[string]interface{})["rawValue"] = rawValue
 
 			if len(value.(map[string]interface{})["item"].(map[string]interface{})) != 0 {
-				for ItemKey, ItemValue := range value.(map[string]interface{})["item"].(map[string]interface{}) {
-					if ItemValue == rawValue {
-						sensorValues[key].(map[string]interface{})["scaledValue"] = ItemKey
+				for itemKey, itemValue := range value.(map[string]interface{})["item"].(map[string]interface{}) {
+					if itemValue == rawValue {
+						sensorValues[key].(map[string]interface{})["scaledValue"] = itemKey
 					}
 				}
 			}
 
 			if len(value.(map[string]interface{})["rangeitem"].(map[string]interface{})) != 0 {
-				for RangeItemKey, RangeItemValue := range value.(map[string]interface{})["rangeitem"].(map[string]interface{}) {
-					if rawValue >= RangeItemValue.(map[string]interface{})[RangeItemKey+"-start"].(int) && rawValue <= RangeItemValue.(map[string]interface{})[RangeItemKey+"-end"].(int) {
-						sensorValues[key].(map[string]interface{})["scaledValue"] = RangeItemKey
+				for rangeItemKey, rangeItemValue := range value.(map[string]interface{})["rangeitem"].(map[string]interface{}) {
+					if rawValue >= rangeItemValue.(map[string]interface{})[rangeItemKey+"-start"].(int) && rawValue <= rangeItemValue.(map[string]interface{})[rangeItemKey+"-end"].(int) {
+						sensorValues[key].(map[string]interface{})["scaledValue"] = rangeItemKey
 					}
 				}
 			}
